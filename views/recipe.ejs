@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3565/3565418.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Result Recipe</title>
+    <style>
+        .menu-item {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            background-color: white;
+        }
+
+        .menu-image {
+            width: 400px;
+            height: 400px;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        .menu-info {
+            width: 100%;
+        }
+
+        .menu-name {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .menu-description {
+            font-size: 18px;
+            color: gray;
+            margin-bottom: 20px;
+        }
+
+        .bgr {
+            background-color: #F3F3F3;
+        }
+
+        li.protein {
+            color: #7ACA25;
+            list-style-type: disc;
+        }
+
+        li.fat {
+            color: #FFBE61;
+            list-style-type: disc;
+        }
+
+        li.carb {
+            color: #F14647;
+            list-style-type: disc;
+        }
+
+        .char {
+            color: black;
+        }
+
+        #calories {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .charCal {
+            font-size: 25px;
+        }
+
+        .head {
+            text-align: center;
+        }
+
+        .des {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="head">Recipe</h1>
+    <% for( let i=0; i < foodList.length; i++ ) { %>
+            <div class="menu-item">
+                <img class="menu-image" src="<%= foodList[i].recipe.image %>" alt="menu">
+                <div class="menu-info">
+                    <div class="menu-name">
+                        <%= foodList[i].recipe.label %>
+                    </div>
+                    <div class="menu-description">
+                        <p class="card-text">
+                            <%= foodList[i].recipe.dietLabels.join(" • ") %>
+                        <%= foodList[i].recipe.healthLabels.join(" • ") %>
+                    </p>
+                    <div class=" row bgr">
+                                <div class="col-md-4 des" id="calories"><span class="charCal">
+                                        <%= Math.round(foodList[i].recipe.calories)%>
+                                    </span> kcal</div>
+                                <div class="col-md-4 des">
+                                    <ul>
+                                        <li class="protein">
+                                            <span class="char">
+                                                <%= foodList[i].recipe.totalNutrients.PROCNT.label %>
+                                                    <%= Math.round(foodList[i].recipe.totalNutrients.PROCNT.quantity) %>
+                                                        <%= foodList[i].recipe.totalNutrients.PROCNT.unit %>
+                                            </span>
+                                        </li>
+                                        <li class="fat">
+                                            <span class="char">
+                                                <%= foodList[i].recipe.totalNutrients.FAT.label %>
+                                                    <%= Math.round(foodList[i].recipe.totalNutrients.FAT.quantity) %>
+                                                        <%= foodList[i].recipe.totalNutrients.FAT.unit %>
+                                            </span>
+                                        </li>
+                                        <li class="carb">
+                                            <span class="char">
+                                                <%= foodList[i].recipe.totalNutrients.CHOCDF.label %>
+                                                    <%= Math.round(foodList[i].recipe.totalNutrients.CHOCDF.quantity) %>
+                                                        <%= foodList[i].recipe.totalNutrients.CHOCDF.unit %>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4 des"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <% } %>
+</body>
+
+</html>

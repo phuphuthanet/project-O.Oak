@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Add Bootstrap CDN link for CSS -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3565/3565418.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Recipe</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1><img src="https://cdn-icons-png.flaticon.com/512/3565/3565418.png" width="75" height="75" alt="Logo"/> Recipes From Available Ingredients</h1>
+        <ul class="list-group">
+            <% for( let i=0; i < newListItem.length; i++ ) { %>
+                <form action="/delete" method="post">
+                    <li class="list-group-item" style="font-size: xx-large;">
+                        <%=newListItem[i] %>
+                            <input type="hidden" name="itemId" value="<%= newListItem.indexOf(newListItem[i]) %>">
+                            <button type="submit" style="margin-left: auto;" class="btn btn-danger">X</button>
+                    </li>
+                </form>
+                <% } %>
+        </ul>
+        <form action="/" method="post">
+            <div class="input-group">
+                <input type="text" name="staple" class="form-control" placeholder="วัตถุดิบ" />
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-info">Add</button>
+                </span>
+            </div>
+        </form>
+        <form action="/getrecipe" method="post" style="margin-top: 20px; margin-left: 500px;">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </span>
+            </div>
+        </form>
+    </div>
+    <!-- Add Bootstrap CDN link for JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+
+</html>
