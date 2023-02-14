@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login/Signup Form using Tab Content with Bootstrap 5</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css">
+
+    <style>
+        /* Style the tab content */
+        .tab-content {
+            border: 1px solid #ccc;
+            border-top: none;
+            padding: 12px;
+        }
+
+        /* Style the active button */
+        .nav-link.active {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mx-auto mt-4">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#signup">Signup</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content mt-3">
+                    <div id="login" class="tab-pane fade show active">
+                        <h2>Login</h2>
+                        <form action="/login" method="post">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password:</label>
+                                <input type="password" class="form-control" id="password" name="password">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </form>
+                    </div>
+
+                    <div id="signup" class="tab-pane fade">
+                        <h2>Signup</h2>
+                        <form action="/signup" method="post">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name:</label>
+                                <input type="text" class="form-control" id="name" name="sname">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="email" class="form-control" id="email" name="semail">
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password:</label>
+                                <input type="password" class="form-control" id="password" name="spassword">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Signup</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
