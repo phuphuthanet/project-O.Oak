@@ -5,73 +5,30 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const bodyParser = require('body-parser');
 const https = require('https')
 var items = []
+var alert = ""
+var nameUser = ""
 
-const uri = "mongodb+srv://phuthanet:18052001Phu@cluster0.00fi7bc.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://phuthanet:18052001Phu@cluster0.00fi7bc.mongodb.net/myDB?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-// Check DB connection
 client.connect(err => {
-    const collection = client.db("test").collection("devices");
-    // perform actions on the collection object
     if (err) console.log(err);
     else console.log("Database Connect Successfully!");
-    client.close();
-  });
-  MongoClient.connect(uri, (err, db)=>{
-    var dbo = db.db("Users"); // Create Database
-    // dbo.createCollection("Profile", (err, res)=>{ // Create Table
-    //     if (err) console.log(err);
-    //     else console.log("create successfully");
-    //     db.close();
-    // });
-    // Insert One Data
-    // var myObj = {name:"Chanakarn", id: "624", hobby : "travel", study : "PIM"}; // Data to be inserted
-    // dbo.collection("Profile").insertOne(myObj, (err, res)=>{
-    //     if (err) console.log(err);
-    //     if (res) console.log ("insert data successfully");
-    // });
-    // Insert Many Data
-    // var myObjArr = [
-    //     {name:"Hayate", position:"Carry"},
-    //     {name:"Thane", position: "Tank"},
-    //     {id:555, address:"Thailand"}
-    // ];
-    // dbo.collection("Profile").insertMany(myObjArr, (err, res)=>{
-    //     if (err) console.log(err);
-    //     if (res) console.log("Insert Many Successfully!");
-    // });
-    // Query One (Find One)
-    // dbo.collection("Profile").findOne({}, (err, res) => { // select * from profile limit 1
-    //     console.log("Result from Find One is : ");
-    //     console.log(res);
-    //     console.log(res["hobby"]);
-    // });
-    // // Find Many
-    // dbo.collection("Profile").find({}).toArray((err, res) => { // select * from profile
-    //     console.log("Result from Find Many");
-    //     console.log(res);
-    // });
-    // // Find with condition
-    // var condition = {name: "Chanakarn"};
-    // dbo.collection("Profile").find(condition).toArray((err, res) => {
-    //     console.log("Result from Condition:");
-    //     console.log(res);
-    // });
 });
-  
+
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json());
 app.set('view engine', 'ejs');
 
 app.get("/", (req, res) => {
-    res.render("login", { newListItem: items });
+    res.render("login", { alert: alert });
 })
 
 app.get("/home", (req, res) => {
-    res.render("index", { newListItem: items });
+    res.render("index", { newListItem: items, user:nameUser });
 })
 
 app.post("/home", (req, res) => {
-    // res.render("list", { newListItem: req.body.newItem})
     if (req.body.staple == "") {
         console.log("Value is null");
     } else {
@@ -80,6 +37,15 @@ app.post("/home", (req, res) => {
     res.redirect("/home")
 })
 
+app.post("/back", (req, res) => {
+    res.redirect("/home")
+})
+
+app.get('/alert', (req, res) => {
+    const message = "Invalid email or password";
+    res.render('alert', { message: message });
+});
+
 app.post("/delete", (req, res) => {
     const itemId = req.body.itemId;
     console.log(itemId);
@@ -87,24 +53,63 @@ app.post("/delete", (req, res) => {
     res.redirect("/home")
 })
 
-app.post("/login", (req, res) => {
+app.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
-    console.log(email);
-    console.log(password);
-    res.redirect("/home")
-})
 
-app.post("/signup", (req, res) => {
+    client.connect((err) => {
+        if (err) throw err;
+        const db = client.db("myDB");
+        const collection = db.collection("users");
+        collection.findOne({ email: email, password: password }, (err, result) => {
+            if (err) throw err;
+            if (result) {
+                alert = "Login successful"
+                nameUser = result.name;
+                console.log(alert);
+                res.redirect("/home");
+            } else {
+                alert = "Invalid email or password"
+                console.log(alert);
+                res.redirect("/alert");
+            }
+        });
+    });
+});
+
+app.post('/signup', (req, res) => {
     const name = req.body.sname;
     const email = req.body.semail;
     const password = req.body.spassword;
-    console.log(name);
-    console.log(email);
-    console.log(password);
-    res.redirect("/")
-})
 
+    client.connect((err) => {
+        if (err) throw err;
+        const db = client.db("myDB");
+        const collection = db.collection("users");
+        const document = { name: name, email: email, password: password };
+        collection.insertOne(document, (err, result) => {
+            if (err) throw err;
+            console.log("Document inserted successfully");
+            res.redirect("/");
+            client.close();
+        });
+    });
+});
+
+app.post('/logout', (req, res) => {
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.redirect('/');
+        }
+      });
+    } else {
+      res.redirect('/');
+    }
+  });  
+  
 app.post("/getrecipe", (req, res) => {
     const itemsString = items.join(",");
     console.log(itemsString);
@@ -114,7 +119,7 @@ app.post("/getrecipe", (req, res) => {
         .then(response => response.text())
         .then(text => {
             const data = JSON.parse(text)
-            res.render("recipe",{ foodList:data.hits});
+            res.render("recipe", { foodList: data.hits });
         })
         .catch(error => {
             console.error("Error:", error);
