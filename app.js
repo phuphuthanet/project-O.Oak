@@ -48,7 +48,6 @@ app.get('/alert', (req, res) => {
 
 app.post("/delete", (req, res) => {
     const itemId = req.body.itemId;
-    console.log(itemId);
     items.splice(itemId, 1);
     res.redirect("/home")
 })
