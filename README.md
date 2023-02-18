@@ -32,7 +32,6 @@
 <h1>Library Used</h1>
 <ol>
      <li>express</li>
-     <li>node-fetch</li>
      <li>mongodb</li>
      <li>body-parsers</li>
      <li>https</li>
