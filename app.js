@@ -80,6 +80,7 @@ app.post('/signup', (req, res) => {
     const name = req.body.sname;
     const email = req.body.semail;
     const password = req.body.spassword;
+    email = email.toLowerCase();
 
     client.connect((err) => {
         if (err) throw err;
