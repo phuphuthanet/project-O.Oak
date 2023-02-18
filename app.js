@@ -55,7 +55,8 @@ app.post("/delete", (req, res) => {
 app.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
-
+    email = email.toLowerCase();
+    
     client.connect((err) => {
         if (err) throw err;
         const db = client.db("myDB");
