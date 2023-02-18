@@ -90,7 +90,6 @@ app.post('/signup', (req, res) => {
             if (err) throw err;
             console.log("Document inserted successfully");
             res.redirect("/");
-            client.close();
         });
     });
 });
