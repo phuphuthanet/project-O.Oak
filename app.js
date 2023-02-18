@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const fetch = require('node-fetch');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const bodyParser = require('body-parser');
 const https = require('https')
@@ -55,13 +54,13 @@ app.post("/delete", (req, res) => {
 app.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
-    email = email.toLowerCase();
-    
+    let emailLower = email.toLowerCase();
+
     client.connect((err) => {
         if (err) throw err;
         const db = client.db("myDB");
         const collection = db.collection("users");
-        collection.findOne({ email: email, password: password }, (err, result) => {
+        collection.findOne({ email: emailLower, password: password }, (err, result) => {
             if (err) throw err;
             if (result) {
                 alert = "Login successful"
@@ -81,13 +80,13 @@ app.post('/signup', (req, res) => {
     const name = req.body.sname;
     const email = req.body.semail;
     const password = req.body.spassword;
-    email = email.toLowerCase();
+    let emailLower = email.toLowerCase();
 
     client.connect((err) => {
         if (err) throw err;
         const db = client.db("myDB");
         const collection = db.collection("users");
-        const document = { name: name, email: email, password: password };
+        const document = { name: name, email: emailLower, password: password };
         collection.insertOne(document, (err, result) => {
             if (err) throw err;
             console.log("Document inserted successfully");
@@ -114,22 +113,34 @@ app.post("/getrecipe", (req, res) => {
     const itemsString = items.join(",");
     console.log(itemsString);
 
-    const url = 'https://api.edamam.com/api/recipes/v2?type=public&q=' + itemsString + '&app_id=830276f9&app_key=%20538988ed21c3c495f160142db5fb0df6';
-    fetch(url)
-        .then(response => response.text())
-        .then(text => {
-            const data = JSON.parse(text)
-            res.render("recipe", { foodList: data.hits });
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            res.status(500).send("Error: " + error.message);
+    const options = {
+        hostname: 'api.edamam.com',
+        path: '/api/recipes/v2?type=public&q=' + itemsString + '&app_id=830276f9&app_key=%20538988ed21c3c495f160142db5fb0df6',
+        method: 'GET'
+    };
+
+    const request = https.request(options, response => {
+        let data = '';
+        response.on('data', chunk => {
+            data += chunk;
         });
+        response.on('end', () => {
+            const result = JSON.parse(data);
+            res.render("recipe", { foodList: result.hits });
+        });
+    });
+
+    request.on('error', error => {
+        console.error("Error:", error);
+        res.status(500).send("Error: " + error.message);
+    });
+
+    request.end();
 });
+
 app.use((req, res, next) => {
     res.status(404).send("Sorry, that page doesn't exist.");
 });
-
 
 app.listen(3000, () => {
     console.log("Server is running at port 3000");
