@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/home", (req, res) => {
-    res.render("index", { newListItem: items, user:nameUser });
+    res.render("index", { newListItem: items, user: nameUser });
 })
 
 app.post("/home", (req, res) => {
@@ -103,26 +103,25 @@ app.post('/signup', (req, res) => {
         collection.insertOne(document, (err, result) => {
             if (err) throw err;
             console.log("Document inserted successfully");
-            res.redirect("/alertsignup");
-            //res.redirect("/");
+            res.redirect("/");
         });
     });
 });
 
 app.post('/logout', (req, res) => {
     if (req.session) {
-      req.session.destroy((err) => {
-        if (err) {
-          console.log(err);
-        } else {
-          res.redirect('/');
-        }
-      });
+        req.session.destroy((err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.redirect('/');
+            }
+        });
     } else {
-      res.redirect('/');
+        res.redirect('/');
     }
-  });  
-  
+});
+
 app.post("/getrecipe", (req, res) => {
     const itemsString = items.join(",");
     console.log(itemsString);
