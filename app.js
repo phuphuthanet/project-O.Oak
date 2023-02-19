@@ -40,9 +40,22 @@ app.post("/back", (req, res) => {
     res.redirect("/home")
 })
 
-app.get('/alert', (req, res) => {
-    const message = "Invalid email or password";
+app.get('/alertsuccess', (req, res) => {
+    const message = "Login successful";
     res.render('alert', { message: message });
+    res.redirect("/home")
+    
+});
+
+app.get('/alert', (req, res) => {
+    const message = alert;
+    res.render('alert', { message: message });
+});
+
+app.get('/alertsignup', (req, res) => {
+    const message = "Congratulations, your account has been successfully created";
+    res.render('alert', { message: message });
+    res.redirect("/")
 });
 
 app.post("/delete", (req, res) => {
@@ -64,9 +77,9 @@ app.post('/login', (req, res) => {
             if (err) throw err;
             if (result) {
                 alert = "Login successful"
-                nameUser = result.name;
-                console.log(alert);
-                res.redirect("/home");
+                nameUser = result.name;                            
+                console.log(alert); 
+                res.redirect("/alert")
             } else {
                 alert = "Invalid email or password"
                 console.log(alert);
@@ -90,7 +103,8 @@ app.post('/signup', (req, res) => {
         collection.insertOne(document, (err, result) => {
             if (err) throw err;
             console.log("Document inserted successfully");
-            res.redirect("/");
+            res.redirect("/alertsignup");
+            //res.redirect("/");
         });
     });
 });
