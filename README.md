@@ -31,6 +31,7 @@
 </ol>  
 <h1>Library Used</h1>
 <ol>
+     <li>bcrypt</li>
      <li>express</li>
      <li>mongodb</li>
      <li>body-parsers</li>
