@@ -5,8 +5,14 @@
 </head>
 <body>
   <script>
-    alert("<%= message %>");
-    window.location.href = "/";
+    if ("<%= message %>" == "Login successful") {
+      alert("<%= message %>");
+      window.location.href ="/home" ;
+    } else {
+      alert("<%= message %>");
+      window.location.href = "/";
+    }
+    
   </script>
 </body>
 </html>
