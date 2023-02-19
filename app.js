@@ -45,18 +45,12 @@ app.get('/alertsuccess', (req, res) => {
     const message = "Login successful";
     res.render('alert', { message: message });
     res.redirect("/home")
-    
+
 });
 
 app.get('/alert', (req, res) => {
     const message = alert;
     res.render('alert', { message: message });
-});
-
-app.get('/alertsignup', (req, res) => {
-    const message = "Congratulations, your account has been successfully created";
-    res.render('alert', { message: message });
-    res.redirect("/")
 });
 
 app.post("/delete", (req, res) => {
@@ -77,10 +71,18 @@ app.post('/login', (req, res) => {
         collection.findOne({ email: emailLower }, (err, result) => {
             if (err) throw err;
             if (result) {
-                alert = "Login successful"
-                nameUser = result.name;
-                console.log(alert);
-                res.redirect("/home");
+                bcrypt.compare(password, result.password, (err, isMatch) => {
+                    if (isMatch) {
+                        alert = "Login successful"
+                        nameUser = result.name;
+                        console.log(alert);
+                        res.redirect("/alert");
+                    } else {
+                        alert = "Invalid email or password"
+                        console.log(alert);
+                        res.redirect("/alert");
+                    }
+                });
             } else {
                 alert = "Invalid email or password"
                 console.log(alert);
@@ -96,21 +98,34 @@ app.post('/signup', (req, res) => {
     const password = req.body.spassword;
     let emailLower = email.toLowerCase();
 
-    client.connect((err) => {
-        if (err) throw err;
-        const db = client.db("myDB");
-        const collection = db.collection("users");
-        const document = { name: name, email: emailLower, password: password };
-        collection.insertOne(document, (err, result) => {
+    bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(password, salt, (err, hash) => {
             if (err) throw err;
-            console.log("Document inserted successfully");
-            alert = "Sign UP Successfully"
-            console.log(alert);
-            res.redirect("/alert");
+            client.connect((err) => {
+                if (err) throw err;
+                const db = client.db("myDB");
+                const collection = db.collection("users");
+                collection.findOne({ email: emailLower }, (err, result) => {
+                    if (err) throw err;
+                    if (result) {
+                        alert = "User with that email already exists"
+                        console.log(alert);
+                        res.redirect("/alert");
+                    } else {
+                        const document = { name: name, email: emailLower, password: hash };
+                        collection.insertOne(document, (err, result) => {
+                            if (err) throw err;
+                            console.log("Document inserted successfully");
+                            alert = "Sign UP Successfully"
+                            console.log(alert);
+                            res.redirect("/alert");
+                        });
+                    }
+                });
+            });
         });
     });
 });
-
 
 app.post('/logout', (req, res) => {
     if (req.session) {
